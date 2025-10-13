@@ -18,7 +18,8 @@ entity CLA_Hierarchical is
         b    : in  std_logic_vector(N_BITS-1 downto 0);
         cin  : in  std_logic;
         s    : out std_logic_vector(N_BITS-1 downto 0);
-        cout : out std_logic
+        cout : out std_logic;
+		  c_out : out std_logic_vector(N_BITS/4 downto 1)
     );
 end entity CLA_Hierarchical;
 
@@ -104,6 +105,13 @@ begin
         
         c_between(i+1) <= c_clgb(i)(4);
     end generate gen_clgb;
+	 
+	 gen_c_out: for i in 0 to NUM_CLGB-1 generate
+		  c_out(4*i+1) <= c_clgb(i)(1);
+		  c_out(4*i+2) <= c_clgb(i)(2);
+		  c_out(4*i+3) <= c_clgb(i)(3);
+		  c_out(4*i+4) <= c_clgb(i)(4);
+	 end generate;
     
     cout <= c_between(NUM_CLGB);
     
