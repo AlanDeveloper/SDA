@@ -6,6 +6,7 @@ entity PROJETO is
         clock    : in  STD_LOGIC;
         reset    : in  STD_LOGIC;
         data_in  : in  STD_LOGIC_VECTOR(31 downto 0);
+		  control  : in  STD_LOGIC_VECTOR(18 downto 0);
         data_out : out STD_LOGIC_VECTOR(31 downto 0);
 		  overflow : out STD_LOGIC;
 		  carry    : out STD_LOGIC;
@@ -89,7 +90,7 @@ architecture Arc of PROJETO is
 	 signal out_mf      : STD_LOGIC_VECTOR(31 downto 0);
 	 signal out_md      : STD_LOGIC_VECTOR(31 downto 0);
 begin
-    decoder_sel <= data_in(12 downto 10);
+    decoder_sel <= control(12 downto 10);
 	 negative    <= out_alu(31);
     zero        <= '1' when out_alu = X"00000000" else '0';
 	 data_out    <= out_mb;
@@ -103,7 +104,7 @@ begin
     
     -- Gera enables individuais: decoder_out AND enable geral
     GEN_ENABLES: for i in 0 to 7 generate
-        reg_enables(i) <= decoder_out(i) AND data_in(9);
+        reg_enables(i) <= decoder_out(i) AND control(9);
     end generate GEN_ENABLES;
     
     -- Gera os 8 registradores com enable individual
@@ -121,7 +122,7 @@ begin
     -- MUX A: Seleciona registrador A usando bits 18:16
     MUXA: mux8to1 
         port map (
-            sel    => data_in(18 downto 16),
+            sel    => control(18 downto 16),
             input0 => reg_outputs(0),
             input1 => reg_outputs(1),
             input2 => reg_outputs(2),
@@ -136,7 +137,7 @@ begin
     -- MUX B: Seleciona registrador B usando bits 15:13
     MUXB: mux8to1 
         port map (
-            sel    => data_in(15 downto 13),
+            sel    => control(15 downto 13),
             input0 => reg_outputs(0),
             input1 => reg_outputs(1),
             input2 => reg_outputs(2),
@@ -151,7 +152,7 @@ begin
     -- MUX MB: Seleciona entre out_b ou data_in usando bit 8
     MUXMB: mux2to1 
         port map (
-            sel    => data_in(8),
+            sel    => control(8),
             input0 => out_b,
             input1 => data_in,
             output => out_mb
@@ -160,7 +161,7 @@ begin
     -- ALU INST: Realiza a operação sobre out_a e out_mb
 	 ALU_INST: alu
 		  port map (
-				sel      => data_in(7 downto 4),
+				sel      => control(7 downto 4),
 				input0   => out_a,
 				input1   => out_mb,
 				output   => out_alu,
@@ -171,7 +172,7 @@ begin
 	 -- SHIFTER INST: Realiza o deslocamento sobre out_mb
 	 SHIFTER_INST: shifter
 		  port map (
-				sel    => data_in(3 downto 2),
+				sel    => control(3 downto 2),
 				input  => out_mb,
 				output => out_shifter
 		  );
@@ -179,7 +180,7 @@ begin
 	 -- MUX MF: Seleciona entre out_alu e out_shifter
     MUXMF: mux2to1 
         port map (
-            sel    => data_in(1),
+            sel    => control(1),
             input0 => out_alu,
             input1 => out_shifter,
             output => out_mf
@@ -188,7 +189,7 @@ begin
 	 -- MUX MD: Seleciona entre out_mf e data_in
     MUXMD: mux2to1 
         port map (
-            sel    => data_in(0),
+            sel    => control(0),
             input0 => out_mf,
             input1 => data_in,
             output => out_md
