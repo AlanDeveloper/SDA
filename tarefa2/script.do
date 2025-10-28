@@ -8,4 +8,4 @@ vcom -work work -2002 -explicit {C:/Users/alans/OneDrive/Área de Trabalho/tarefa
 vcom -work work -2002 -explicit {C:\Users\alans\OneDrive\Área de Trabalho\tarefa2\PROJETO_TB.vhd}
 vsim -gui work.projeto_tb
 do wave.do
-run 160 ns
+run 285 ns
