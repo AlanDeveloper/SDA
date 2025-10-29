@@ -62,8 +62,9 @@ O projeto segue uma estrutura hierárquica modular composta pelos seguintes comp
 ### Passos para Simular
 
 1. Abra o ModelSim
-2. Verifique se a pasta contém os arquivos conforme foi requisitado
-3. No terminal do ModelSim, execute:
+2. Crie um novo projeto
+3. Inclua os arquivos conforme foi requisitado e **SELECIONE A OPÇÃO DE COPIAR OS ARQUIVOS PARA O DIRETÓRIO**
+4. No terminal do ModelSim, execute:
    ```
    do script.do
    ```
@@ -124,4 +125,5 @@ R4 ← R2 or (not R0)
 | 1101 | A or (not B) |
 | 1110 | A and (not B) |
 | 1111 | A xor (not B) |
+
 
