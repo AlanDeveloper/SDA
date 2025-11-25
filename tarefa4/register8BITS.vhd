@@ -6,13 +6,13 @@ entity register32BITS is
         clock  : in  STD_LOGIC;
         reset  : in  STD_LOGIC;
         enable : in  STD_LOGIC;
-        d_in   : in  STD_LOGIC_VECTOR(8 downto 0);
-        d_out  : out STD_LOGIC_VECTOR(8 downto 0)
+        d_in   : in  STD_LOGIC_VECTOR(7 downto 0);
+        d_out  : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end register32BITS;
 
 architecture Arc of register32BITS is
-    signal reg : STD_LOGIC_VECTOR(8 downto 0);
+    signal reg : STD_LOGIC_VECTOR(7 downto 0);
 begin
     process(clock, reset)
     begin
