@@ -4,9 +4,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity mux2to1 is
     Port (
         sel    : in  STD_LOGIC;
-        input0 : in  STD_LOGIC_VECTOR(31 downto 0);
-        input1 : in  STD_LOGIC_VECTOR(31 downto 0);
-        output : out STD_LOGIC_VECTOR(31 downto 0)
+        input0 : in  STD_LOGIC_VECTOR(7 downto 0);
+        input1 : in  STD_LOGIC_VECTOR(7 downto 0);
+        output : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end mux2to1;
 
