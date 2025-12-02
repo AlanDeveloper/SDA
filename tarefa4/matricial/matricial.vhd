@@ -19,12 +19,10 @@ architecture arq of matricial is
         );
     End component;
     
-    -- Sinais para armazenar os resultados de cada estágio (16 bits cada)
     signal resultado_0, resultado_1, resultado_2, resultado_3 : std_logic_vector(15 downto 0);
     signal resultado_4, resultado_5, resultado_6 : std_logic_vector(15 downto 0);
     
 begin
-    -- ===== GERADOR DOS PRODUTOS PARCIAIS =====
     G0: for i in 0 to 7 generate
         G1: for j in 0 to 7 generate 
             pp(i)(j) <= a(i) and b(j);
@@ -52,7 +50,6 @@ begin
     -- Estágio 7: resultado_5 + (pp(7) << 7)
     resultado_6 <= resultado_5 + ("0" & pp(7) & "0000000");
     
-    -- Saída final
     p <= resultado_6;
     
 end arq;
