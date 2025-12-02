@@ -21,16 +21,14 @@ architecture arq of mult_sequencial is
     signal contador : INTEGER range 0 to 8;
     signal md : STD_LOGIC_VECTOR(7 downto 0);
     signal mr : STD_LOGIC_VECTOR(7 downto 0);
-    signal acc : STD_LOGIC_VECTOR(15 downto 0);  -- Acumulador (parte alta do resultado)
+    signal acc : STD_LOGIC_VECTOR(15 downto 0);
     signal soma_entrada : STD_LOGIC_VECTOR(15 downto 0);
     signal soma_saida : STD_LOGIC_VECTOR(15 downto 0);
     
 begin
     
-    -- MUX superior: seleciona 0 ou MD para somar baseado em mr(0)
     soma_entrada <= "00000000" & md when mr(0) = '1' else (others => '0');
     
-    -- Somador
     soma_saida <= acc + soma_entrada;
     
     process(clk, rst)
@@ -58,8 +56,6 @@ begin
                 
                 when OPERANDO =>
                     if contador < 8 then
-                        -- Concatena resultado: parte alta (após soma) e LSB de MR
-                        -- Depois faz shift right de tudo junto
                         acc <= '0' & soma_saida(15 downto 1);
                         mr <= soma_saida(0) & mr(7 downto 1);
                         
@@ -77,7 +73,6 @@ begin
         end if;
     end process;
     
-    -- Resultado final: concatenação de acc e mr
     resultado <= acc(7 downto 0) & mr;
 
 end arq;
