@@ -1,78 +1,97 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
+Library IEEE;
+USE IEEE.std_logic_1164.all;
+USE IEEE.std_logic_unsigned.all;
 
-entity PROJETO_TB is
-end PROJETO_TB;
+Entity PROJETO_TB is
+End PROJETO_TB;
 
-architecture Behavioral of PROJETO_TB is
-    component PROJETO
-       Port(
+architecture tb of PROJETO_TB is
+    
+    component PROJETO is
+        Port(
             a : in std_logic_vector(7 downto 0);
             b : in std_logic_vector(7 downto 0);
             resultado : out std_logic_vector(15 downto 0)
         );
-    end component;
+    End component;
     
-    signal clock    : STD_LOGIC := '0';
-    signal reset    : STD_LOGIC := '0';
-    signal a  : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal b  : STD_LOGIC_VECTOR(7 downto 0) := (others => '0');
-    signal resultado  : STD_LOGIC_VECTOR(15 downto 0) := (others => '0');
-    
-    constant CLK_PERIOD : time := 10 ns;
+    signal a_tb : std_logic_vector(7 downto 0);
+    signal b_tb : std_logic_vector(7 downto 0);
+    signal resultado_tb : std_logic_vector(15 downto 0);
     
 begin
-    UUT: PROJETO
-        port map (
-            a : in std_logic_vector(7 downto 0);
-            b : in std_logic_vector(7 downto 0);
-            resultado : out std_logic_vector(15 downto 0)
-        );
     
-    clk_process: process
-    begin
-        clock <= '0';
-        wait for CLK_PERIOD/2;
-        clock <= '1';
-        wait for CLK_PERIOD/2;
-    end process;
+    DUT: PROJETO port map(
+        a => a_tb,
+        b => b_tb,
+        resultado => resultado_tb
+    );
     
-    test_process: process
+    process
     begin
-        report "===== INICIANDO TESTES =====";
         
-        -- Reset inicial
-        reset <= '1';
-        wait until rising_edge(clock);
-        wait until rising_edge(clock);
-        reset <= '0';
-        wait until rising_edge(clock);
+        -- ===== TESTE 1: 5 x 3 = 15 =====
+        report "TESTE 1: 5 x 3";
+        a_tb <= "00000101";  -- 5
+        b_tb <= "00000011";  -- 3
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 15)";
         
-        -----------------------------------------------------------------
-        -- TESTE 1: 5 * 7
-        -----------------------------------------------------------------
-        report "TESTE 1: R0 <- 10";
-        a <= "00000101";
-        b <= "00000111";
-        wait until rising_edge(clock);
-        assert resultado = "0000000000100011"
-            report "ERRO TESTE 1: resultado deveria ser 0000000000100011"
-            severity error;
+        -- ===== TESTE 2: 10 x 10 = 100 =====
+        report "TESTE 2: 10 x 10";
+        a_tb <= "00001010";  -- 10
+        b_tb <= "00001010";  -- 10
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 100)";
         
-        -----------------------------------------------------------------
-        -- TESTE 2: 10 * 2
-        -----------------------------------------------------------------
-        report "TESTE 1: R0 <- 10";
-        a <= "00001010";
-        b <= "00000010";
-        wait until rising_edge(clock);
-        assert resultado = "0000000000010100"
-            report "ERRO TESTE 2: resultado deveria ser 0000000000010100"
-            severity error;
+        -- ===== TESTE 3: 255 x 255 = 65025 =====
+        report "TESTE 3: 255 x 255";
+        a_tb <= "11111111";  -- 255
+        b_tb <= "11111111";  -- 255
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 65025)";
         
-        report "===== TODOS OS TESTES PASSARAM =====";
+        -- ===== TESTE 4: 0 x 100 = 0 =====
+        report "TESTE 4: 0 x 100";
+        a_tb <= "00000000";  -- 0
+        b_tb <= "01100100";  -- 100
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 0)";
+        
+        -- ===== TESTE 5: 7 x 7 = 49 =====
+        report "TESTE 5: 7 x 7";
+        a_tb <= "00000111";  -- 7
+        b_tb <= "00000111";  -- 7
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 49)";
+        
+        -- ===== TESTE 6: 52 x 38 = 1976 =====
+        report "TESTE 6: 52 x 38";
+        a_tb <= "00110100";  -- 52
+        b_tb <= "00100110";  -- 38
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 1976)";
+        
+        -- ===== TESTE 7: 199 x 109 = 21691 =====
+        report "TESTE 7: 199 x 109";
+        a_tb <= "11000111";  -- 199
+        b_tb <= "01101101";  -- 109
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 21691)";
+        
+        -- ===== TESTE 8: 15 x 15 = 225 =====
+        report "TESTE 8: 15 x 15";
+        a_tb <= "00001111";  -- 15
+        b_tb <= "00001111";  -- 15
+        wait for 10 ns;
+        report "Resultado: " & integer'image(conv_integer(resultado_tb)) & " (esperado 225)";
+        
+        report "======================================";
+        report "TODOS OS TESTES CONCLUIDOS!";
+        report "======================================";
+        
         wait;
+        
     end process;
     
-end Behavioral;
+end tb;

@@ -14,7 +14,26 @@ Entity mult_sequencial is
     );
 End mult_sequencial;
 
-architecture arq of mult_sequencial is
+architecture estrutural of mult_sequencial is
+    
+    component soma16b is
+        Port(
+            a    : in std_logic_vector(15 downto 0);
+            b    : in std_logic_vector(15 downto 0);
+            s    : out std_logic_vector(15 downto 0);
+            cout : out std_logic
+        );
+    End component;
+    
+    component mux2to1_16b is
+        Port (
+            sel    : in  STD_LOGIC;
+            input0 : in  STD_LOGIC_VECTOR(15 downto 0);
+            input1 : in  STD_LOGIC_VECTOR(15 downto 0);
+            output : out STD_LOGIC_VECTOR(15 downto 0)
+        );
+    End component;
+    
     type estado is (OCIOSO, OPERANDO, FINALIZADO);
     signal estado_atual : estado;
     
@@ -22,14 +41,36 @@ architecture arq of mult_sequencial is
     signal md : STD_LOGIC_VECTOR(7 downto 0);
     signal mr : STD_LOGIC_VECTOR(7 downto 0);
     signal acc : STD_LOGIC_VECTOR(15 downto 0);
+    
     signal soma_entrada : STD_LOGIC_VECTOR(15 downto 0);
     signal soma_saida : STD_LOGIC_VECTOR(15 downto 0);
+    signal cout_dummy : STD_LOGIC;
+    
+    signal acc_shifado : STD_LOGIC_VECTOR(15 downto 0);
+    signal acc_zerado : STD_LOGIC_VECTOR(15 downto 0);
+    signal mux_acc_out : STD_LOGIC_VECTOR(15 downto 0);
     
 begin
     
     soma_entrada <= "00000000" & md when mr(0) = '1' else (others => '0');
     
-    soma_saida <= acc + soma_entrada;
+    SOMA_INST: soma16b port map(
+        a    => acc,
+        b    => soma_entrada,
+        s    => soma_saida,
+        cout => cout_dummy
+    );
+    
+    acc_shifado <= '0' & soma_saida(15 downto 1);
+    
+    acc_zerado <= (others => '0');
+    
+    MUX_ACC_INST: mux2to1_16b port map(
+        sel    => start,
+        input0 => acc_zerado,
+        input1 => acc_shifado,
+        output => mux_acc_out
+    );
     
     process(clk, rst)
     begin
@@ -56,9 +97,8 @@ begin
                 
                 when OPERANDO =>
                     if contador < 8 then
-                        acc <= '0' & soma_saida(15 downto 1);
+                        acc <= mux_acc_out;
                         mr <= soma_saida(0) & mr(7 downto 1);
-                        
                         contador <= contador + 1;
                     else
                         estado_atual <= FINALIZADO;
@@ -74,5 +114,5 @@ begin
     end process;
     
     resultado <= acc(7 downto 0) & mr;
-
-end arq;
+    
+end estrutural;
