@@ -28,7 +28,6 @@ architecture arq of matricial is
     signal resultado_4, resultado_5, resultado_6 : std_logic_vector(15 downto 0);
     signal cout_dummy : std_logic_vector(6 downto 0);
 
-    -- sinais m�nimos necess�rios
     signal a0, b0, b1, b2, b3, b4, b5, b6 : std_logic_vector(15 downto 0);
 
 begin
